@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Weather App by Example
+    </title>
+    <style>
+        body {
+            background-size: cover;
+            background-position: top top;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            height: 100vh;
+        }
+
+        #citydiv {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #info {
+            text-align: center;
+        }
+
+        #cityinfo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 0px;
+            font-family: tahoma, sans-serif;
+        }
+
+        #city {
+            background-color: transparent;
+            font-size: 25px;
+            width: 200px;
+            margin-top: 100px;
+            padding-top: 10px;
+            padding-bottom: 5px;
+            padding-left: 95px;
+            padding-right: 95px;
+            border: 1px solid #ccc;
+            border-radius: 48px;
+            text-align: center;
+            font-weight: bold;
+            backdrop-filter: none;
+        }
+
+        #day {
+            margin-block-end: 0px;
+            margin-block-start: 5px;
+            margin-bottom: 0px;
+            margin-inline-end: 0px;
+            margin-inline-start: 0px;
+            margin-top: 5px;
+
+            font-weight: bold;
+            font-size: 18px;
+            font-family: goudy old style, serif;
+        }
+
+        #temp {
+            margin-block-end: 0px;
+            margin-block-start: 30px;
+            margin-top: 30;
+            margin-bottom: 0px;
+            font-size: 100px;
+            font-weight: bold;
+            font-family: Verdana, Geneva, Tahoma, sans-serif
+        }
+
+        #weather {
+            font-size: 30px;
+            margin-top: 30px;
+            font-family: century gothic, sans-serif;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="citydiv"><input type="text" onchange="getWeather()" id="city" placeholder="City"></div>
+    <div id="info">
+        <p id="cityinfo"></p>
+        <p id="day"></p>
+        <p id="temp"></p>
+        <p id="weather"></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script>
+        if (dayjs().format('A') == !'AM') {
+            document.body.background = "light.png";
+        } else {
+            document.body.background = "dark.png"; 
+            document.body.style.color = "white";
+        }
+        function getWeather() {
+            const city = document.getElementById("city").value;
+            const apiID = '96f113262a8d460e2451c4f319c203fb'
+            const api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiID}`
+            fetch(api)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.cod === 200) {
+                        const cityName = data.name + ', ' + data.sys.country;
+                        const day = dayjs().format('dddd, MMMM DD YYYY');
+                        const temp = (data.main.temp - 273.15).toFixed(0) + '°c';
+                        const weather = data.weather[0].main;
+
+                        document.getElementById("cityinfo").innerText = `${cityName}`;
+                        document.getElementById("day").innerText = `${day}`;
+                        document.getElementById("temp").innerText = `${temp}`;
+                        document.getElementById("weather").innerText = `${weather}`;
+                    } else {
+                        alert('City not found');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+
+</html>
